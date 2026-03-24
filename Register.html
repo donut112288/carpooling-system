@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register page</title>
+    <link rel="stylesheet" href="css/Register.css">
+</head>
+<style>
+
+.left{
+
+    background-image: url(shades-orange-bright-scale.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+}
+
+
+</style>
+<body>
+    <form action="register_verification.php" method="POST" enctype="multipart/form-data">
+    <div class="container">
+        <div class="left"> Create your free account</div>
+        <div class="right">
+            <div class="row flex-start large">
+                Sign Up to APU Carpool
+            </div>
+            <div class="row medium">
+                Profile picture
+            </div>
+            <div style="height: 20%;" class="row">
+                <input type="file" name="profile" id="fileInput" accept="image/jpeg, image/png" required><div class="circle" id="uploadCircle" >
+                    <span>Click to Upload</span>
+                    <img id="previewImage">
+                </div>
+            </div>
+            <div class="row flex-start medium">
+                Phone Number 
+            </div>
+            <div class="row flex-start medium">
+                <input type="number" class="input" name="contacts" required>
+            </div>
+            <div  class="row flex-start medium">
+                Username (Max. 12 characters)
+            </div>
+            <div class="row flex-start medium">
+                <input type="text" class="input" name="username" required>
+            </div>
+            <div class="row flex-start medium">
+                Password
+            </div>
+            <div class="row flex-start medium">
+                <input type="password" class="input" name="password" required>
+            </div>
+            <div  class="row flex-start medium">
+                Gender
+            </div>
+            <div class="row flex-start">
+                <select class = "input" name="gender" required>
+                    <option value = "">Gender</option>
+                    <option value ="M">Male</option>
+                    <option value ="F">Female</option> 
+                </select>
+            </div>
+            <div class="row flex-start medium">
+                Date of Birth
+            </div>
+            <div class="row flex-start">
+                <input type="date" class="input" name="date" required>
+            </div>
+            <div  class="row flex-start medium">
+                
+            </div>
+            <div class="row flex-start medium">
+                <button class="submit" type="submit">Sign Up</button>
+            </div>
+            <div  class="row small">
+                Already have an account? <a href="Login.html"> Click here!</a>
+            </div>
+
+
+          
+
+
+        </div>
+    </div>
+</form>
+
+<script>
+    const circle = document.getElementById("uploadCircle");
+    const fileInput = document.getElementById("fileInput");
+    const previewImage = document.getElementById("previewImage");
+    const phoneNumberInput = document.querySelector('input[name="contacts"]');
+    const UsernameInput = document.querySelector('input[name="username"]');
+    const dobInput = document.querySelector('input[name="date"]');
+    const form = document.querySelector("form");
+
+    let isImageSelected = false;
+
+    circle.addEventListener("click", () => {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener("change", function(event) {
+        const file = event.target.files[0];
+
+        if (file) {
+            const fileType = file.type;
+            const allowedTypes = ["image/jpeg", "image/png"]; // Allowed file types
+
+            if (allowedTypes.includes(fileType)) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = "block"; 
+                    circle.querySelector("span").style.display = "none"; 
+                    isImageSelected = true; 
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                alert("Invalid file type! Only JPG and PNG files are allowed.");
+                fileInput.value = ""; // Reset file input
+                previewImage.src = ""; // Remove preview image
+                previewImage.style.display = "none"; 
+                circle.querySelector("span").style.display = "block";
+                isImageSelected = false;
+            }
+        }
+    });
+
+    phoneNumberInput.addEventListener("input", function () {
+        if (phoneNumberInput.value.length > 10) {
+            phoneNumberInput.value = phoneNumberInput.value.slice(0, 10); 
+        }
+    });
+
+    UsernameInput.addEventListener("input", function () {
+        if (UsernameInput.value.length > 12) {
+            UsernameInput.value = UsernameInput.value.slice(0, 12); 
+        }
+    });
+
+    form.addEventListener("submit", function (event) {
+        const dobValue = dobInput.value;
+        const birthYear = new Date(dobValue).getFullYear();
+        const currentYear = new Date().getFullYear();
+        const age = currentYear - birthYear;
+
+        if (!isImageSelected) {
+            event.preventDefault();
+            alert("Please upload a profile picture.");
+            return;
+        }
+
+        if (phoneNumberInput.value.length !== 10) {
+            event.preventDefault();
+            alert("Phone number must be exactly 10 digits.");
+            return;
+        }
+
+        if (UsernameInput.value.length > 12) {
+            event.preventDefault();
+            alert("Username can only be up to 12 characters.");
+            return;
+        }
+
+        if (dobValue && age < 16) {
+            event.preventDefault();
+            alert("You must be at least 16 years old to sign up.");
+        }
+    });
+</script>
+</body>
+</html>
